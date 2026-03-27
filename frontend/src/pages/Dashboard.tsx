@@ -50,15 +50,52 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl mb-1">Dashboard</h1>
-        <p className="text-text-muted text-sm">Panoramica del portafoglio titoli e attività in sospeso</p>
+    <div
+      style={{
+        padding: '32px',
+        backgroundColor: 'var(--bg-primary)',
+        minHeight: '100%',
+        fontFamily: 'var(--font-system)',
+      }}
+    >
+      {/* Page Header */}
+      <div style={{ marginBottom: '32px' }}>
+        <p
+          style={{
+            fontSize: '13px',
+            color: 'var(--text-secondary)',
+            fontWeight: 500,
+            marginBottom: '4px',
+          }}
+        >
+          TitoliEngine &rsaquo; Dashboard
+        </p>
+        <h1
+          style={{
+            fontSize: '32px',
+            fontWeight: 600,
+            letterSpacing: '-0.02em',
+            color: 'var(--text-primary)',
+            margin: 0,
+          }}
+        >
+          Dashboard
+        </h1>
       </div>
 
-      <QuickStats data={stats ?? defaultStats} />
+      {/* Quick Stats */}
+      <div style={{ marginBottom: '32px' }}>
+        <QuickStats data={stats ?? defaultStats} />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Two-column grid: PendingApprovals (60%) + AlertsPanel (40%) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '3fr 2fr',
+          gap: '24px',
+        }}
+      >
         <PendingApprovals entries={pendingEntries ?? []} />
         <AlertsPanel alerts={alerts ?? []} />
       </div>

@@ -7,11 +7,6 @@ interface MoneyDisplayProps {
   className?: string;
 }
 
-/**
- * Componente per visualizzare importi monetari.
- * Font IBM Plex Mono, allineamento a destra, rosso se negativo.
- * Formato italiano: separatore migliaia punto, decimali virgola.
- */
 export default function MoneyDisplay({ value, decimals = 2, currency = 'EUR', className = '' }: MoneyDisplayProps) {
   const num = typeof value === 'string' ? parseFloat(value) : value;
   const isNegative = !isNaN(num) && num < 0;
@@ -19,7 +14,12 @@ export default function MoneyDisplay({ value, decimals = 2, currency = 'EUR', cl
 
   return (
     <span
-      className={`font-money text-right inline-block ${isNegative ? 'text-danger' : 'text-text'} ${className}`}
+      className={`font-money text-right inline-block ${className}`}
+      style={{
+        fontFamily: 'var(--font-mono)',
+        color: isNegative ? 'var(--color-danger)' : 'var(--text-primary)',
+        fontWeight: 600,
+      }}
     >
       {currency === 'EUR' ? '€ ' : `${currency} `}
       {formatted}

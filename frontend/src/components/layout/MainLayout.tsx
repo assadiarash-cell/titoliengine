@@ -1,24 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import Header from './Header';
-import { useUiStore } from '../../store/uiStore';
 
 export default function MainLayout() {
-  const { sidebarCollapsed } = useUiStore();
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: 'var(--bg-primary)' }}>
       <Sidebar />
-      <div
-        className={`transition-all duration-300 ${
-          sidebarCollapsed ? 'ml-16' : 'ml-60'
-        }`}
-      >
-        <Header />
-        <main className="p-6 animate-fade-in">
-          <Outlet />
-        </main>
-      </div>
+      <main className="flex-1 overflow-y-auto">
+        <Outlet />
+      </main>
     </div>
   );
 }

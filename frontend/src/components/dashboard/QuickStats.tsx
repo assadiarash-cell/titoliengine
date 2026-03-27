@@ -1,4 +1,4 @@
-import { Briefcase, Wallet, ClipboardCheck, AlertTriangle } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { formatMoney } from '../../utils/formatters';
 import type { QuickStatsData } from '../../types';
 
@@ -6,44 +6,94 @@ interface QuickStatsProps {
   data: QuickStatsData;
 }
 
-const cards = [
-  { key: 'securities_count' as const, label: 'Titoli in Portafoglio', icon: Briefcase, format: (v: number) => String(v) },
-  { key: 'portfolio_value' as const, label: 'Valore Totale', icon: Wallet, format: (v: string) => `€ ${formatMoney(v)}` },
-  { key: 'pending_approvals' as const, label: 'Da Approvare', icon: ClipboardCheck, format: (v: number) => String(v), highlight: true },
-  { key: 'parsing_discrepancies' as const, label: 'Discrepanze Parsing', icon: AlertTriangle, format: (v: number) => String(v), danger: true },
-];
-
 export default function QuickStats({ data }: QuickStatsProps) {
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map(({ key, label, icon: Icon, format, highlight, danger }) => {
-        const rawValue = data[key];
-        const numValue = typeof rawValue === 'number' ? rawValue : parseFloat(rawValue);
-        const showAlert = (highlight || danger) && numValue > 0;
+  const cards = [
+    {
+      label: 'Titoli in Portafoglio',
+      value: String(data.securities_count),
+      large: true,
+    },
+    {
+      label: 'Valore Contabile Totale',
+      value: `€${formatMoney(data.portfolio_value)}`,
+      mono: true,
+      showTrend: true,
+    },
+    {
+      label: 'Scritture da Approvare',
+      value: String(data.pending_approvals),
+      large: true,
+      warning: data.pending_approvals > 0,
+    },
+    {
+      label: 'Discrepanze Parsing',
+      value: String(data.parsing_discrepancies),
+      large: true,
+    },
+  ];
 
-        return (
+  return (
+    <div className="grid grid-cols-4 gap-6">
+      {cards.map(({ label, value, large, mono, showTrend, warning }) => (
+        <div
+          key={label}
+          className="rounded-3xl p-6"
+          style={{
+            background: 'var(--bg-surface)',
+            boxShadow: 'var(--shadow-neumorphic-out)',
+          }}
+        >
           <div
-            key={key}
-            className={`bg-surface border rounded-xl p-5 card-hover ${
-              showAlert && danger ? 'border-danger/30' : showAlert ? 'border-primary/30 pulse-glow' : 'border-border'
-            }`}
+            style={{
+              fontSize: '11px',
+              color: 'var(--text-tertiary)',
+              marginBottom: '12px',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-text-muted text-sm">{label}</span>
-              <div className={`p-2 rounded-lg ${
-                showAlert && danger ? 'bg-danger-dim text-danger' : showAlert ? 'bg-primary-dim text-primary' : 'bg-surface-hover text-text-muted'
-              }`}>
-                <Icon size={18} />
-              </div>
-            </div>
-            <span className={`text-2xl font-money font-semibold ${
-              showAlert && danger ? 'text-danger' : 'text-text'
-            }`}>
-              {format(rawValue as never)}
-            </span>
+            {label}
           </div>
-        );
-      })}
+          <div className="flex items-center gap-3">
+            <div
+              style={{
+                fontFamily: mono ? 'var(--font-mono)' : 'var(--font-system)',
+                fontSize: large ? '40px' : '24px',
+                color: 'var(--text-primary)',
+                lineHeight: 1,
+                fontWeight: 600,
+                letterSpacing: large ? '-0.02em' : undefined,
+              }}
+            >
+              {value}
+            </div>
+            {warning && (
+              <span
+                style={{
+                  backgroundColor: 'var(--color-warning)',
+                  color: 'white',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  padding: '4px 10px',
+                  borderRadius: '8px',
+                }}
+              >
+                Attenzione
+              </span>
+            )}
+          </div>
+          {showTrend && (
+            <div
+              className="flex items-center gap-1 mt-2"
+              style={{ color: 'var(--color-success)', fontSize: '14px', fontWeight: 600 }}
+            >
+              <TrendingUp className="w-4 h-4" />
+              <span>+2.4%</span>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

@@ -67,14 +67,56 @@ export default function Journal() {
       sortable: false,
       width: '80px',
       render: (e) => (
-        <div className="flex gap-1">
+        <div style={{ display: 'flex', gap: '4px' }}>
           {e.status === 'generated' && (
-            <button onClick={(ev) => { ev.stopPropagation(); approveMutation.mutate(e.id); }}
-              className="p-1 text-text-dim hover:text-accent" title="Approva"><Check size={14} /></button>
+            <button
+              onClick={(ev) => { ev.stopPropagation(); approveMutation.mutate(e.id); }}
+              style={{
+                padding: '6px',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--text-tertiary)',
+                cursor: 'pointer',
+                transition: 'color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={(ev) => {
+                ev.currentTarget.style.color = 'var(--color-primary)';
+                ev.currentTarget.style.background = 'var(--bg-elevated)';
+              }}
+              onMouseLeave={(ev) => {
+                ev.currentTarget.style.color = 'var(--text-tertiary)';
+                ev.currentTarget.style.background = 'transparent';
+              }}
+              title="Approva"
+            >
+              <Check size={14} />
+            </button>
           )}
           {e.status === 'approved' && (
-            <button onClick={(ev) => { ev.stopPropagation(); postMutation.mutate(e.id); }}
-              className="p-1 text-text-dim hover:text-success" title="Registra"><Send size={14} /></button>
+            <button
+              onClick={(ev) => { ev.stopPropagation(); postMutation.mutate(e.id); }}
+              style={{
+                padding: '6px',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--text-tertiary)',
+                cursor: 'pointer',
+                transition: 'color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={(ev) => {
+                ev.currentTarget.style.color = 'var(--color-success)';
+                ev.currentTarget.style.background = 'var(--bg-elevated)';
+              }}
+              onMouseLeave={(ev) => {
+                ev.currentTarget.style.color = 'var(--text-tertiary)';
+                ev.currentTarget.style.background = 'transparent';
+              }}
+              title="Registra"
+            >
+              <Send size={14} />
+            </button>
           )}
         </div>
       ),
@@ -82,47 +124,116 @@ export default function Journal() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl mb-1">Scritture Contabili</h1>
-          <p className="text-text-muted text-sm">Partita doppia — OIC 20</p>
+    <div style={{ padding: '32px', background: 'var(--bg-primary)', minHeight: '100%' }}>
+      {/* Breadcrumb + Header */}
+      <div style={{ marginBottom: '32px' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+          Dashboard / Scritture Contabili
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+            Scritture Contabili
+          </h1>
+          <button
+            onClick={() => generateMutation.mutate()}
+            disabled={generateMutation.isPending}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              background: generateMutation.isPending ? 'var(--bg-elevated)' : 'var(--color-primary)',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '16px',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: generateMutation.isPending ? 'not-allowed' : 'pointer',
+              boxShadow: generateMutation.isPending ? 'none' : '0 0 20px rgba(10, 132, 255, 0.3)',
+              opacity: generateMutation.isPending ? 0.5 : 1,
+              transition: 'box-shadow 0.2s, background 0.2s, opacity 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              if (!generateMutation.isPending) {
+                e.currentTarget.style.background = 'var(--color-primary-hover)';
+                e.currentTarget.style.boxShadow = '0 0 28px rgba(10, 132, 255, 0.45)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!generateMutation.isPending) {
+                e.currentTarget.style.background = 'var(--color-primary)';
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(10, 132, 255, 0.3)';
+              }
+            }}
+          >
+            <Play size={16} />
+            {generateMutation.isPending ? 'Generazione...' : 'Genera Scritture'}
+          </button>
         </div>
-        <button
-          onClick={() => generateMutation.mutate()}
-          disabled={generateMutation.isPending}
-          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-background rounded-lg text-sm font-medium hover:bg-primary-hover disabled:opacity-50 transition-colors"
-        >
-          <Play size={16} />
-          {generateMutation.isPending ? 'Generazione...' : 'Genera Scritture'}
-        </button>
       </div>
 
       {/* Balance check banner */}
       {balanceCheck && (
-        <div className={`flex items-center gap-3 px-4 py-3 rounded-lg border ${
-          balanceCheck.is_balanced ? 'border-success/30 bg-success-dim' : 'border-danger/30 bg-danger-dim'
-        }`}>
-          <BookOpen size={18} className={balanceCheck.is_balanced ? 'text-success' : 'text-danger'} />
-          <span className={`text-sm ${balanceCheck.is_balanced ? 'text-success' : 'text-danger'}`}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            padding: '16px 20px',
+            borderRadius: '16px',
+            background: 'var(--bg-surface)',
+            boxShadow: 'var(--shadow-neumorphic-subtle)',
+            marginBottom: '24px',
+            borderLeft: `4px solid ${balanceCheck.is_balanced ? 'var(--color-success)' : 'var(--color-danger)'}`,
+          }}
+        >
+          <BookOpen
+            size={18}
+            style={{ color: balanceCheck.is_balanced ? 'var(--color-success)' : 'var(--color-danger)' }}
+          />
+          <span
+            style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: balanceCheck.is_balanced ? 'var(--color-success)' : 'var(--color-danger)',
+            }}
+          >
             {balanceCheck.is_balanced
               ? `Quadratura OK — ${balanceCheck.entries_count} scritture, dare = avere`
-              : `SQUILIBRIO — Differenza: € ${balanceCheck.difference}`
-            }
+              : `SQUILIBRIO — Differenza: \u20AC ${balanceCheck.difference}`}
           </span>
-          <span className="ml-auto font-money text-sm text-text-muted">
-            D: € {parseFloat(balanceCheck.total_debit).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+          <span
+            style={{
+              marginLeft: 'auto',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '13px',
+              color: 'var(--text-secondary)',
+            }}
+          >
+            D: &euro; {parseFloat(balanceCheck.total_debit).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
             {' | '}
-            A: € {parseFloat(balanceCheck.total_credit).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+            A: &euro; {parseFloat(balanceCheck.total_credit).toLocaleString('it-IT', { minimumFractionDigits: 2 })}
           </span>
         </div>
       )}
 
-      <div className="flex gap-3">
+      {/* Filter */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-text focus:outline-none focus:border-primary/50"
+          style={{
+            padding: '12px 20px',
+            background: 'var(--bg-surface)',
+            border: 'none',
+            borderRadius: '16px',
+            fontSize: '14px',
+            color: 'var(--text-primary)',
+            boxShadow: 'var(--shadow-neumorphic-in)',
+            outline: 'none',
+            cursor: 'pointer',
+            appearance: 'auto' as React.CSSProperties['appearance'],
+          }}
         >
           <option value="">Tutti gli stati</option>
           <option value="generated">Generata</option>
@@ -131,8 +242,11 @@ export default function Journal() {
         </select>
       </div>
 
+      {/* Table */}
       {isLoading ? (
-        <div className="text-center py-12 text-text-muted">Caricamento...</div>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)' }}>
+          Caricamento...
+        </div>
       ) : (
         <DataTable
           columns={columns}
@@ -144,44 +258,109 @@ export default function Journal() {
 
       {/* Entry detail modal */}
       {selectedEntry && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6" onClick={() => setSelectedEntry(null)}>
-          <div className="bg-surface border border-border rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg">{selectedEntry.description || selectedEntry.reference}</h3>
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 50,
+            padding: '24px',
+            backdropFilter: 'blur(4px)',
+          }}
+          onClick={() => setSelectedEntry(null)}
+        >
+          <div
+            style={{
+              background: 'var(--bg-surface)',
+              borderRadius: '24px',
+              padding: '28px',
+              maxWidth: '720px',
+              width: '100%',
+              maxHeight: '80vh',
+              overflowY: 'auto',
+              boxShadow: 'var(--shadow-elevated)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                {selectedEntry.description || selectedEntry.reference}
+              </h3>
               <StatusBadge status={selectedEntry.status} />
             </div>
-            <p className="text-sm text-text-muted mb-4">Data: {formatDate(selectedEntry.entry_date)} — Tipo: {selectedEntry.entry_type}</p>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-text-muted">
-                  <th className="text-left py-2">Conto</th>
-                  <th className="text-left py-2">Descrizione</th>
-                  <th className="text-right py-2">Dare</th>
-                  <th className="text-right py-2">Avere</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedEntry.lines.map((line) => (
-                  <tr key={line.id} className="border-b border-border/50">
-                    <td className="py-2 font-money text-xs">{line.account_code}</td>
-                    <td className="py-2">{line.account_name}</td>
-                    <td className="py-2 text-right">{parseFloat(line.debit) > 0 ? <MoneyDisplay value={line.debit} /> : ''}</td>
-                    <td className="py-2 text-right">{parseFloat(line.credit) > 0 ? <MoneyDisplay value={line.credit} /> : ''}</td>
+
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
+              Data: {formatDate(selectedEntry.entry_date)} — Tipo: {selectedEntry.entry_type}
+            </p>
+
+            {/* Lines table */}
+            <div
+              style={{
+                borderRadius: '16px',
+                overflow: 'hidden',
+                background: 'var(--bg-primary)',
+                boxShadow: 'var(--shadow-neumorphic-in)',
+              }}
+            >
+              <table style={{ width: '100%', fontSize: '14px', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-default)' }}>
+                    <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: '11px', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Conto
+                    </th>
+                    <th style={{ textAlign: 'left', padding: '14px 16px', fontSize: '11px', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Descrizione
+                    </th>
+                    <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: '11px', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Dare
+                    </th>
+                    <th style={{ textAlign: 'right', padding: '14px 16px', fontSize: '11px', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Avere
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="font-medium border-t border-border">
-                  <td colSpan={2} className="py-2">Totale</td>
-                  <td className="py-2 text-right">
-                    <MoneyDisplay value={selectedEntry.lines.reduce((s, l) => s + parseFloat(l.debit || '0'), 0)} />
-                  </td>
-                  <td className="py-2 text-right">
-                    <MoneyDisplay value={selectedEntry.lines.reduce((s, l) => s + parseFloat(l.credit || '0'), 0)} />
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                </thead>
+                <tbody>
+                  {selectedEntry.lines.map((line) => (
+                    <tr
+                      key={line.id}
+                      style={{ borderBottom: '1px solid var(--border-default)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                    >
+                      <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                        {line.account_code}
+                      </td>
+                      <td style={{ padding: '12px 16px', color: 'var(--text-primary)' }}>
+                        {line.account_name}
+                      </td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                        {parseFloat(line.debit) > 0 ? <MoneyDisplay value={line.debit} /> : ''}
+                      </td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                        {parseFloat(line.credit) > 0 ? <MoneyDisplay value={line.credit} /> : ''}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ borderTop: '2px solid var(--border-default)' }}>
+                    <td colSpan={2} style={{ padding: '14px 16px', fontWeight: 600, color: 'var(--text-primary)' }}>
+                      Totale
+                    </td>
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                      <MoneyDisplay value={selectedEntry.lines.reduce((s, l) => s + parseFloat(l.debit || '0'), 0)} />
+                    </td>
+                    <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                      <MoneyDisplay value={selectedEntry.lines.reduce((s, l) => s + parseFloat(l.credit || '0'), 0)} />
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
       )}

@@ -1,85 +1,175 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Briefcase,
+  FileText,
   ArrowRightLeft,
   BookOpen,
-  FileText,
-  BarChart3,
   Upload,
   TrendingUp,
+  BarChart3,
   Shield,
   Settings,
-  ChevronLeft,
-  ChevronRight,
+  LogOut,
+  Download,
 } from 'lucide-react';
-import { useUiStore } from '../../store/uiStore';
+import { useAuthStore } from '../../store/authStore';
 
-const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/securities', icon: Briefcase, label: 'Titoli' },
-  { to: '/transactions', icon: ArrowRightLeft, label: 'Operazioni' },
-  { to: '/journal', icon: BookOpen, label: 'Scritture' },
-  { to: '/documents', icon: FileText, label: 'Documenti' },
-  { to: '/valuations', icon: TrendingUp, label: 'Valutazioni' },
-  { to: '/reports', icon: BarChart3, label: 'Report' },
-  { to: '/export', icon: Upload, label: 'Export' },
-  { to: '/audit', icon: Shield, label: 'Audit Log' },
-  { to: '/settings', icon: Settings, label: 'Impostazioni' },
+const navigation = [
+  {
+    section: 'PRINCIPALE',
+    items: [
+      { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    ],
+  },
+  {
+    section: 'OPERATIVO',
+    items: [
+      { name: 'Titoli', icon: FileText, path: '/securities' },
+      { name: 'Operazioni', icon: ArrowRightLeft, path: '/transactions' },
+      { name: 'Scritture Contabili', icon: BookOpen, path: '/journal' },
+      { name: 'Documenti', icon: Upload, path: '/documents' },
+    ],
+  },
+  {
+    section: 'CHIUSURA',
+    items: [
+      { name: 'Valutazioni', icon: TrendingUp, path: '/valuations' },
+      { name: 'Report', icon: BarChart3, path: '/reports' },
+      { name: 'Export', icon: Download, path: '/export' },
+    ],
+  },
+  {
+    section: 'SISTEMA',
+    items: [
+      { name: 'Audit Log', icon: Shield, path: '/audit' },
+      { name: 'Impostazioni', icon: Settings, path: '/settings' },
+    ],
+  },
 ];
 
 export default function Sidebar() {
-  const { sidebarCollapsed, toggleSidebar } = useUiStore();
+  const location = useLocation();
+  const { logout } = useAuthStore();
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen bg-surface border-r border-border flex flex-col z-50 transition-all duration-300 ${
-        sidebarCollapsed ? 'w-16' : 'w-60'
-      }`}
+      className="w-[260px] flex flex-col flex-shrink-0"
+      style={{
+        backgroundColor: 'var(--sidebar)',
+        borderRight: '1px solid var(--border-default)',
+      }}
     >
       {/* Logo */}
-      <div className="flex items-center h-16 px-4 border-b border-border">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-8 h-8 rounded-lg bg-primary-dim flex items-center justify-center flex-shrink-0">
-            <span className="text-primary font-bold text-sm font-money">TE</span>
-          </div>
-          {!sidebarCollapsed && (
-            <span className="font-heading text-lg text-text whitespace-nowrap">TitoliEngine</span>
-          )}
+      <div className="h-20 flex items-center justify-center">
+        <div
+          className="flex items-center justify-center w-14 h-14 rounded-2xl"
+          style={{
+            background: 'var(--bg-primary)',
+            boxShadow: 'var(--shadow-neumorphic-out)',
+          }}
+        >
+          <span
+            className="font-semibold text-xl tracking-tight"
+            style={{ color: 'var(--color-primary)', fontWeight: 600 }}
+          >
+            TE
+          </span>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 overflow-y-auto">
-        <ul className="space-y-0.5 px-2">
-          {navItems.map(({ to, icon: Icon, label }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                    isActive
-                      ? 'sidebar-active text-primary font-medium'
-                      : 'text-text-muted hover:text-text hover:bg-surface-hover'
-                  }`
-                }
-                title={sidebarCollapsed ? label : undefined}
-              >
-                <Icon size={20} className="flex-shrink-0" />
-                {!sidebarCollapsed && <span>{label}</span>}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+      <nav className="flex-1 overflow-y-auto px-4 py-6">
+        {navigation.map((section, idx) => (
+          <div key={section.section} className={idx > 0 ? 'mt-8' : ''}>
+            <div
+              className="px-3 mb-3 uppercase tracking-wider"
+              style={{
+                fontSize: '11px',
+                fontWeight: 600,
+                color: 'var(--text-tertiary)',
+                letterSpacing: '0.08em',
+              }}
+            >
+              {section.section}
+            </div>
+            <div className="space-y-1">
+              {section.items.map((item) => {
+                const isActive = location.pathname === item.path;
+                const Icon = item.icon;
+
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200"
+                    style={{
+                      background: isActive ? 'var(--bg-primary)' : 'transparent',
+                      boxShadow: isActive ? 'var(--shadow-neumorphic-in)' : 'none',
+                      color: isActive ? 'var(--color-primary)' : 'var(--text-secondary)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = 'var(--bg-elevated)';
+                        e.currentTarget.style.color = 'var(--text-primary)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.color = 'var(--text-secondary)';
+                      }
+                    }}
+                  >
+                    <Icon className="w-5 h-5" strokeWidth={2} />
+                    <span style={{ fontSize: '15px', fontWeight: 500 }}>{item.name}</span>
+                  </NavLink>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
-      {/* Collapse toggle */}
-      <button
-        onClick={toggleSidebar}
-        className="flex items-center justify-center h-12 border-t border-border text-text-muted hover:text-text transition-colors"
-      >
-        {sidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-      </button>
+      {/* User info */}
+      <div className="p-4">
+        <div
+          className="flex items-center gap-3 p-3 rounded-2xl"
+          style={{
+            background: 'var(--bg-primary)',
+            boxShadow: 'var(--shadow-neumorphic-out)',
+          }}
+        >
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: 'var(--color-primary)', color: 'white', fontWeight: 600, fontSize: '14px' }}
+          >
+            TE
+          </div>
+          <div className="flex-1 min-w-0">
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>
+              TitoliEngine
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+              Commercialista
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            className="p-2 rounded-lg transition-all duration-200"
+            style={{ color: 'var(--text-secondary)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--bg-elevated)';
+              e.currentTarget.style.color = 'var(--text-primary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }}
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </aside>
   );
 }

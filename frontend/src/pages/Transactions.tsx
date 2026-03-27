@@ -54,18 +54,56 @@ export default function Transactions() {
       sortable: false,
       width: '80px',
       render: (t) => (
-        <div className="flex gap-1">
+        <div style={{ display: 'flex', gap: '4px' }}>
           {t.status === 'draft' && (
             <button
               onClick={(e) => { e.stopPropagation(); approveMutation.mutate(t.id); }}
-              className="p-1 text-text-dim hover:text-success" title="Approva"
-            ><Check size={14} /></button>
+              style={{
+                padding: '6px',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--text-tertiary)',
+                cursor: 'pointer',
+                transition: 'color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--color-success)';
+                e.currentTarget.style.background = 'var(--bg-elevated)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--text-tertiary)';
+                e.currentTarget.style.background = 'transparent';
+              }}
+              title="Approva"
+            >
+              <Check size={14} />
+            </button>
           )}
           {t.status === 'approved' && (
             <button
               onClick={(e) => { e.stopPropagation(); rejectMutation.mutate(t.id); }}
-              className="p-1 text-text-dim hover:text-warning" title="Rigetta"
-            ><RotateCcw size={14} /></button>
+              style={{
+                padding: '6px',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--text-tertiary)',
+                cursor: 'pointer',
+                transition: 'color 0.2s, background 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--color-warning)';
+                e.currentTarget.style.background = 'var(--bg-elevated)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--text-tertiary)';
+                e.currentTarget.style.background = 'transparent';
+              }}
+              title="Rigetta"
+            >
+              <RotateCcw size={14} />
+            </button>
           )}
         </div>
       ),
@@ -73,32 +111,97 @@ export default function Transactions() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl mb-1">Operazioni</h1>
-          <p className="text-text-muted text-sm">Registro operazioni su titoli</p>
+    <div style={{ padding: '32px', background: 'var(--bg-primary)', minHeight: '100%' }}>
+      {/* Breadcrumb + Header */}
+      <div style={{ marginBottom: '32px' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+          Dashboard / Operazioni
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+            Operazioni
+          </h1>
+          <button
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              background: 'var(--color-primary)',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '16px',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              boxShadow: '0 0 20px rgba(10, 132, 255, 0.3)',
+              transition: 'box-shadow 0.2s, background 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--color-primary-hover)';
+              e.currentTarget.style.boxShadow = '0 0 28px rgba(10, 132, 255, 0.45)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--color-primary)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(10, 132, 255, 0.3)';
+            }}
+          >
+            <Plus size={16} /> Nuova Operazione
+          </button>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 bg-primary text-background rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors">
-          <Plus size={16} /> Nuova Operazione
-        </button>
       </div>
 
-      <div className="flex gap-3">
-        <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+        <div style={{ position: 'relative', flex: 1 }}>
+          <Search
+            size={16}
+            style={{
+              position: 'absolute',
+              left: '16px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--text-tertiary)',
+              pointerEvents: 'none',
+            }}
+          />
           <input
             type="text"
             placeholder="Cerca operazioni..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-text placeholder-text-dim focus:outline-none focus:border-primary/50"
+            style={{
+              width: '100%',
+              paddingLeft: '44px',
+              paddingRight: '16px',
+              paddingTop: '12px',
+              paddingBottom: '12px',
+              background: 'var(--bg-surface)',
+              border: 'none',
+              borderRadius: '16px',
+              fontSize: '14px',
+              color: 'var(--text-primary)',
+              boxShadow: 'var(--shadow-neumorphic-in)',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2.5 bg-surface border border-border rounded-lg text-sm text-text focus:outline-none focus:border-primary/50"
+          style={{
+            padding: '12px 20px',
+            background: 'var(--bg-surface)',
+            border: 'none',
+            borderRadius: '16px',
+            fontSize: '14px',
+            color: 'var(--text-primary)',
+            boxShadow: 'var(--shadow-neumorphic-in)',
+            outline: 'none',
+            cursor: 'pointer',
+            appearance: 'auto' as React.CSSProperties['appearance'],
+          }}
         >
           <option value="">Tutti gli stati</option>
           <option value="draft">Bozza</option>
@@ -107,8 +210,11 @@ export default function Transactions() {
         </select>
       </div>
 
+      {/* Table */}
       {isLoading ? (
-        <div className="text-center py-12 text-text-muted">Caricamento...</div>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-secondary)' }}>
+          Caricamento...
+        </div>
       ) : (
         <DataTable columns={columns} data={filtered} keyExtractor={(t) => t.id} />
       )}

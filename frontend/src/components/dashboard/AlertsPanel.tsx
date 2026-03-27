@@ -19,36 +19,53 @@ const iconMap = {
 };
 
 export default function AlertsPanel({ alerts }: AlertsPanelProps) {
-  if (alerts.length === 0) {
-    return (
-      <div className="bg-surface border border-border rounded-xl p-6">
-        <h3 className="text-lg mb-4">Avvisi</h3>
-        <p className="text-text-muted text-sm text-center py-6">Nessun avviso attivo</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-surface border border-border rounded-xl p-6">
-      <h3 className="text-lg mb-4">Avvisi</h3>
-      <div className="space-y-2">
-        {alerts.map((alert) => {
-          const Icon = iconMap[alert.type];
-          const isCritical = alert.severity === 'critical';
-          return (
-            <div
-              key={alert.id}
-              className={`flex items-start gap-3 px-4 py-3 rounded-lg border ${
-                isCritical ? 'border-danger/30 bg-danger-dim' : 'border-warning/30 bg-warning-dim'
-              }`}
-            >
-              <Icon size={18} className={`mt-0.5 flex-shrink-0 ${isCritical ? 'text-danger' : 'text-warning'}`} />
-              <div>
-                <p className={`text-sm ${isCritical ? 'text-danger' : 'text-warning'}`}>{alert.message}</p>
-              </div>
-            </div>
-          );
-        })}
+    <div
+      className="rounded-3xl"
+      style={{
+        background: 'var(--bg-surface)',
+        boxShadow: 'var(--shadow-neumorphic-out)',
+      }}
+    >
+      <div className="p-6" style={{ borderBottom: '1px solid var(--border-default)' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
+          Attività Recente
+        </h2>
+      </div>
+      <div className="p-6">
+        {alerts.length === 0 ? (
+          <p style={{ color: 'var(--text-secondary)', fontSize: '15px', fontWeight: 500, textAlign: 'center', padding: '24px 0' }}>
+            Nessun avviso attivo
+          </p>
+        ) : (
+          <div className="space-y-6">
+            {alerts.map((alert, idx) => {
+              const Icon = iconMap[alert.type];
+              const dotColor = alert.severity === 'critical' ? 'var(--color-danger)' : 'var(--color-warning)';
+              return (
+                <div key={alert.id} className="flex gap-4">
+                  <div className="relative">
+                    <div
+                      className="w-2.5 h-2.5 rounded-full mt-2"
+                      style={{ backgroundColor: dotColor }}
+                    />
+                    {idx < alerts.length - 1 && (
+                      <div className="absolute left-1 top-5 w-px h-8" style={{ backgroundColor: 'var(--border-default)' }} />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div style={{ fontSize: '15px', color: 'var(--text-primary)', marginBottom: '4px', fontWeight: 500 }}>
+                      {alert.message}
+                    </div>
+                    <div style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                      {alert.timestamp}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
