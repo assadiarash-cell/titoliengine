@@ -38,12 +38,15 @@ async def upload_document(
     if existing:
         return existing
 
-    # Salva file su disco
+    # Salva file su disco con encryption at rest
+    from app.middleware.encryption import encrypt_file_content
+
     UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     ext = Path(file.filename or "doc").suffix or ".pdf"
-    stored_name = f"{uuid.uuid4().hex}{ext}"
+    stored_name = f"{uuid.uuid4().hex}{ext}.enc"
     stored_path = UPLOAD_DIR / stored_name
-    stored_path.write_bytes(content)
+    encrypted = encrypt_file_content(content, settings.secret_key)
+    stored_path.write_bytes(encrypted)
 
     doc = await document_service.create_document(
         session,

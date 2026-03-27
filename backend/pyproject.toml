@@ -1,6 +1,6 @@
 [project]
 name = "titoliengine"
-version = "0.1.0"
+version = "1.0.0"
 description = "Motore contabile deterministico per titoli di debito — OIC 20"
 requires-python = ">=3.12"
 dependencies = [
@@ -14,14 +14,21 @@ dependencies = [
     # Settings / validation
     "pydantic>=2.10.0",
     "pydantic-settings>=2.6.0",
+    # Auth
+    "python-jose[cryptography]>=3.3.0",
+    "bcrypt>=4.0.0",
     # Redis
     "redis>=5.2.0",
     # PDF parsing
     "pdfplumber>=0.11.0",
+    # Excel export
+    "openpyxl>=3.1.0",
     # HTTP client
     "httpx>=0.27.0",
     # Date utilities
     "python-dateutil>=2.9.0",
+    # Encryption at rest
+    "cryptography>=42.0.0",
 ]
 
 [project.optional-dependencies]
@@ -31,6 +38,8 @@ dev = [
     "pytest-cov>=5.0.0",
     "ruff>=0.8.0",
     "mypy>=1.13.0",
+    "aiosqlite>=0.20.0",
+    "pre-commit>=3.7.0",
 ]
 
 [build-system]
@@ -45,6 +54,10 @@ filterwarnings = ["ignore::DeprecationWarning"]
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM"]
+ignore = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

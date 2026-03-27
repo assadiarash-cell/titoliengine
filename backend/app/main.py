@@ -12,6 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
+from app.middleware.security import SecurityHeadersMiddleware, InputSanitizationMiddleware
+from app.middleware.rate_limit import RateLimitMiddleware
 
 logger = logging.getLogger("titoliengine")
 
@@ -19,7 +21,7 @@ logger = logging.getLogger("titoliengine")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown events."""
-    logger.info("TitoliEngine starting up")
+    logger.info("TitoliEngine v%s starting up", settings.app_version)
     yield
     logger.info("TitoliEngine shutting down")
 
@@ -29,16 +31,31 @@ app = FastAPI(
     version=settings.app_version,
     description="Motore contabile deterministico per titoli di debito — OIC 20",
     lifespan=lifespan,
+    docs_url="/api/docs" if settings.debug else None,
+    redoc_url="/api/redoc" if settings.debug else None,
 )
 
-# ── CORS ──────────────────────────────────────────────────────
+# ── Security middleware (ordine: ultimo aggiunto = primo eseguito) ──
+
+# 1. CORS restrittivo
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+    expose_headers=["X-Process-Time", "X-RateLimit-Remaining"],
+    max_age=600,
 )
+
+# 2. Security headers (Helmet equivalente)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 3. Input sanitization
+app.add_middleware(InputSanitizationMiddleware)
+
+# 4. Rate limiting
+app.add_middleware(RateLimitMiddleware, default_limit=100, auth_limit=20, window=60)
 
 
 # ── Request timing middleware ─────────────────────────────────

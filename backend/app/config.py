@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # ── App ───────────────────────────────────────────────────
     app_name: str = "TitoliEngine"
-    app_version: str = "0.1.0"
+    app_version: str = "1.0.0"
     debug: bool = False
     secret_key: str = "change-me-in-production"
 
