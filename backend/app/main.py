@@ -69,12 +69,22 @@ from app.api.tenants import router as tenants_router
 from app.api.securities import router as securities_router
 from app.api.transactions import router as transactions_router
 from app.api.journal import router as journal_router
+from app.api.documents import router as documents_router
+from app.api.valuations import router as valuations_router
+from app.api.reports import router as reports_router
+from app.api.export import router as export_router
+from app.api.audit import router as audit_router
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(tenants_router, prefix="/api/v1")
 app.include_router(securities_router, prefix="/api/v1")
 app.include_router(transactions_router, prefix="/api/v1")
 app.include_router(journal_router, prefix="/api/v1")
+app.include_router(documents_router, prefix="/api/v1")
+app.include_router(valuations_router, prefix="/api/v1")
+app.include_router(reports_router, prefix="/api/v1")
+app.include_router(export_router, prefix="/api/v1")
+app.include_router(audit_router, prefix="/api/v1")
 
 
 @app.get("/health")

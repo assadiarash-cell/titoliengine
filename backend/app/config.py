@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     # ── CORS ──────────────────────────────────────────────────
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # ── Upload ──────────────────────────────────────────────
+    upload_dir: str = "uploads"
+
+    # ── Anthropic API (per LLM extraction) ─────────────────
+    anthropic_api_key: str = ""
+
     # ── Logging ───────────────────────────────────────────────
     log_level: str = "INFO"
 

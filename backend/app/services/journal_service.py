@@ -170,6 +170,53 @@ def _persist_entry(
     return db_entry
 
 
+async def persist_engine_entry(
+    session: AsyncSession,
+    *,
+    engine_entry: EngineEntry,
+    client_id: uuid.UUID,
+    fiscal_year: int,
+    transaction_id: uuid.UUID | None = None,
+) -> JournalEntryModel:
+    """Persiste una EngineEntry generata dal motore contabile (uso generico).
+
+    A differenza di _persist_entry, non richiede una Transaction.
+    Usato da valuation_service per scritture di svalutazione/ripristino.
+    """
+    db_entry = JournalEntryModel(
+        client_id=client_id,
+        transaction_id=transaction_id,
+        entry_date=engine_entry.entry_date,
+        competence_date=engine_entry.entry_date,
+        description=engine_entry.description,
+        entry_type=engine_entry.entry_type or "year_end_valuation",
+        fiscal_year=fiscal_year,
+        status="generated",
+        generation_rule=f"engine.journal.{engine_entry.entry_type}",
+    )
+    for idx, line in enumerate(engine_entry.lines, start=1):
+        db_line = JournalLineModel(
+            line_number=idx,
+            account_code=line.account_code,
+            account_name=line.account_name,
+            debit=line.debit,
+            credit=line.credit,
+            description=line.description,
+        )
+        db_entry.lines.append(db_line)
+    session.add(db_entry)
+    await session.flush()
+    await log_audit(
+        session,
+        client_id=client_id,
+        entity_type="journal_entry",
+        entity_id=db_entry.id,
+        action="create",
+        computation_rule=f"engine.journal.{engine_entry.entry_type}",
+    )
+    return db_entry
+
+
 async def get_entry(
     session: AsyncSession, entry_id: uuid.UUID
 ) -> JournalEntryModel | None:
