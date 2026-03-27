@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0A0A0F;
+  --color-surface: #141419;
+  --color-surface-hover: #1A1A22;
+  --color-border: #1E1E2E;
+  --color-border-light: #2A2A3A;
+  --color-primary: #C9A84C;
+  --color-primary-hover: #D4B85E;
+  --color-primary-dim: rgba(201, 168, 76, 0.15);
+  --color-accent: #4A9EFF;
+  --color-accent-hover: #6BB0FF;
+  --color-accent-dim: rgba(74, 158, 255, 0.15);
+  --color-success: #34D399;
+  --color-success-dim: rgba(52, 211, 153, 0.15);
+  --color-danger: #EF4444;
+  --color-danger-dim: rgba(239, 68, 68, 0.15);
+  --color-warning: #F59E0B;
+  --color-warning-dim: rgba(245, 158, 11, 0.15);
+  --color-text: #F0F0F5;
+  --color-text-muted: #8888A0;
+  --color-text-dim: #555566;
+
+  --font-heading: 'DM Serif Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-light) transparent;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+}
+
+.font-money {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar-active {
+  background: linear-gradient(90deg, rgba(201, 168, 76, 0.12) 0%, transparent 100%);
+  border-left: 2px solid var(--color-primary);
+}
+
+.card-hover {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  border-color: var(--color-border-light);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.04);
+}
+
+.table-row-hover:hover {
+  background-color: var(--color-surface-hover);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.2); }
+  50% { box-shadow: 0 0 8px 2px rgba(201, 168, 76, 0.15); }
+}
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}

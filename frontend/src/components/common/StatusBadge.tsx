@@ -1,0 +1,13 @@
+import { statusLabel, statusColor } from '../../utils/formatters';
+
+interface StatusBadgeProps {
+  status: string;
+}
+
+export default function StatusBadge({ status }: StatusBadgeProps) {
+  return (
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColor(status)}`}>
+      {statusLabel(status)}
+    </span>
+  );
+}
