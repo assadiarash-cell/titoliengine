@@ -3,7 +3,17 @@ import uuid
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
-from jose import JWTError, jwt
+
+try:
+    from jose import jwt as jose_jwt
+    _encode = jose_jwt.encode
+    _decode = jose_jwt.decode
+    from jose import JWTError
+except ImportError:
+    import jwt as pyjwt
+    JWTError = pyjwt.PyJWTError  # type: ignore[assignment,misc]
+    _encode = pyjwt.encode
+    _decode = pyjwt.decode
 
 from app.config import settings
 
@@ -31,7 +41,7 @@ def create_access_token(user_id: uuid.UUID, studio_id: uuid.UUID) -> str:
         "exp": expire,
         "type": "access",
     }
-    return jwt.encode(payload, settings.secret_key, algorithm=ALGORITHM)
+    return _encode(payload, settings.secret_key, algorithm=ALGORITHM)
 
 
 def create_refresh_token(user_id: uuid.UUID) -> str:
@@ -42,9 +52,9 @@ def create_refresh_token(user_id: uuid.UUID) -> str:
         "exp": expire,
         "type": "refresh",
     }
-    return jwt.encode(payload, settings.secret_key, algorithm=ALGORITHM)
+    return _encode(payload, settings.secret_key, algorithm=ALGORITHM)
 
 
 def decode_token(token: str) -> dict:
-    """Decodifica e valida JWT token. Raises JWTError se invalido."""
-    return jwt.decode(token, settings.secret_key, algorithms=[ALGORITHM])
+    """Decodifica e valida JWT token. Raises JWTError/PyJWTError se invalido."""
+    return _decode(token, settings.secret_key, algorithms=[ALGORITHM])

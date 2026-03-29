@@ -1,0 +1,11 @@
+Execute Action/
+Execute Action.zip
+frontend/node_modules/
+backend/tests/
+backend/.env
+.git/
+.claude/
+preview.html
+*.pyc
+__pycache__/
+.DS_Store

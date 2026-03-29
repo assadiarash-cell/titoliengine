@@ -66,7 +66,7 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         localStorage.removeItem('te_access_token');
         localStorage.removeItem('te_refresh_token');
-        window.location.href = '/login';
+        // Don't redirect — app works without auth in demo mode
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

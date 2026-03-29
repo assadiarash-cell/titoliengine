@@ -8,9 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_session
 from app.models.tenant import User
-from app.utils.auth import decode_token
-
-from jose import JWTError
+from app.utils.auth import decode_token, JWTError
 
 
 async def get_db() -> AsyncSession:
