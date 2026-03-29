@@ -9,3 +9,9 @@ node_modules/
 .venv/
 venv/
 backend/uploads/
+.DS_Store
+Execute Action/
+Execute Action.zip
+.vercel/
+.claude/
+preview.html

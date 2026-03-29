@@ -9,7 +9,7 @@ import type { AuditLogEntry } from '../types';
 export default function AuditLog() {
   const [entityFilter, setEntityFilter] = useState('');
   const [actionFilter, setActionFilter] = useState('');
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [_hoveredRow, _setHoveredRow] = useState<string | null>(null);
 
   const { data: logs = [], isLoading } = useQuery<AuditLogEntry[]>({
     queryKey: ['audit-log', entityFilter, actionFilter],

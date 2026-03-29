@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, CheckCircle, Clock } from 'lucide-react';
+import { ArrowUpRight, CheckCircle } from 'lucide-react';
 import { formatDate, formatMoney, transactionTypeLabel } from '../../utils/formatters';
 import type { JournalEntry } from '../../types';
 

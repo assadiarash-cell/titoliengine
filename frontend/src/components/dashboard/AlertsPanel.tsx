@@ -40,7 +40,7 @@ export default function AlertsPanel({ alerts }: AlertsPanelProps) {
         ) : (
           <div className="space-y-6">
             {alerts.map((alert, idx) => {
-              const Icon = iconMap[alert.type];
+              void iconMap[alert.type];
               const dotColor = alert.severity === 'critical' ? 'var(--color-danger)' : 'var(--color-warning)';
               return (
                 <div key={alert.id} className="flex gap-4">

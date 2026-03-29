@@ -91,6 +91,7 @@ from app.api.valuations import router as valuations_router
 from app.api.reports import router as reports_router
 from app.api.export import router as export_router
 from app.api.audit import router as audit_router
+from app.api.copilot import router as copilot_router
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(tenants_router, prefix="/api/v1")
@@ -102,6 +103,7 @@ app.include_router(valuations_router, prefix="/api/v1")
 app.include_router(reports_router, prefix="/api/v1")
 app.include_router(export_router, prefix="/api/v1")
 app.include_router(audit_router, prefix="/api/v1")
+app.include_router(copilot_router, prefix="/api/v1")
 
 
 @app.get("/health")
